@@ -6,6 +6,10 @@ import ElementUI from 'element-ui';
 import 'element-ui/lib/theme-chalk/index.css';
 
 Vue.config.productionTip = false
+
+//vue实例作为总线，事件总线
+Vue.prototype.$bus = new Vue()
+
 Vue.use(ElementUI);
 new Vue({
   router,

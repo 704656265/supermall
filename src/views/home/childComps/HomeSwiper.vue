@@ -4,7 +4,7 @@
         <el-carousel height="250px">
             <el-carousel-item v-for="item in banners">
                 <a class="small" :href="item.link">
-                    <img :src="item.image" alt="" height="100%">
+                    <img :src="item.image" alt="" height="100%" width="100%">
                 </a>
             </el-carousel-item>
         </el-carousel>

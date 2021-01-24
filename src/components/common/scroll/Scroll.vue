@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper" ref="wrapper">
-        <div class="content">
+        <div>
             <slot></slot>
         </div>
     </div>
@@ -8,7 +8,7 @@
 
 <script>
 import BScroll from 'better-scroll'
-// import BScroll from '@better-scroll/core'
+
 
 export default {
     data(){
@@ -19,8 +19,21 @@ export default {
     mounted() {
         this.scroll = new BScroll(this.$refs.wrapper, {
             probeType: 3,
+            mouseWheel: true,
+            bounce: false,
+        })
+        this.scroll.on('scroll', (position)=>{
+            this.$emit('scroll', position)
         })
     },
+    methods: {
+        scrollTo(x, y, time=300){
+            this.scroll && this.scroll.scrollTo(x, y, time)
+        },
+        refresh(){
+            this.scroll && this.scroll.refresh()
+        }
+    }
 }
 </script>
 

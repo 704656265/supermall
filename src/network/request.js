@@ -12,7 +12,7 @@ export function request(config) {
 
     //拦截器
     instance.interceptors.request.use(config => {
-        console.log(config);
+        // console.log(config);
         //为什么要拦截
         //1.config中的信息不符合要求
         //2.显示请求图标
@@ -27,7 +27,7 @@ export function request(config) {
 
     //响应拦截
     instance.interceptors.response.use(res => {
-        console.log(res);
+        // console.log(res);
         return res.data
     }, err => {
         console.log(err);

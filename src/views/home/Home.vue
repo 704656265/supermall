@@ -1,21 +1,14 @@
 <template>
-    <div id='home' class="wrapper">
+    <div id='home'>
         <nav-bar class="home-nav"><div slot="center">首页</div></nav-bar>
         
-        <scroll class="content" ref="scroll">
+        <scroll class="home-scroll" ref="scroll">
             <home-swiper :banners='banners'></home-swiper>
             <home-recommend-view :recommends='recommends'></home-recommend-view>
             <feature-view></feature-view>
             <tab-control class="tab-control" :titles='["流行","新款","精选"]' @tabclick="tabclick"></tab-control>
             <goods-list :goods="showGoods"></goods-list>
         </scroll>
-        <!-- <vue-scroll ref="scroll">
-            <home-swiper :banners='banners'></home-swiper>
-            <home-recommend-view :recommends='recommends'></home-recommend-view>
-            <feature-view></feature-view>
-            <tab-control class="tab-control" :titles='["流行","新款","精选"]' @tabclick="tabclick"></tab-control>
-            <goods-list :goods="showGoods"></goods-list>          
-        </vue-scroll> -->
         <back-top @click.native="backclick"></back-top>
     </div>
 </template>
@@ -29,7 +22,6 @@ import NavBar from 'components/common/navbar/NavBar'
 import TabControl from 'components/content/TabControl/TabControl'
 import GoodsList from 'components/content/goods/GoodsList'
 import Scroll from 'components/common/scroll/Scroll'
-import VueScroll from 'components/common/scroll/VueScroll'
 import BackTop from 'components/content/backtop/BackTop'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home.js'
@@ -46,7 +38,6 @@ export default {
         GoodsList,
         Scroll,
         BackTop,
-        VueScroll
     },
     data(){
         return{
@@ -72,6 +63,13 @@ export default {
         this.getHomeGoods('pop')
         this.getHomeGoods('new')
         this.getHomeGoods('sell')
+
+    },
+    mounted(){
+        //监听图片加载
+        this.$bus.$on('itemImageLoad', ()=>{
+            this.$refs.scroll.refresh()
+        })
     },
     methods: {
         //事件监听相关
@@ -90,8 +88,8 @@ export default {
         },
         backclick(){
             console.log(1);
-            console.log(this.$refs["scroll"]);
-            this.$refs.scroll.scrollTo({ x:0, y:0}, 500, "easeInQuad")
+            // console.log(this.$refs["scroll"]);
+            this.$refs.scroll.scrollTo(0, 0)
         },
 
 
@@ -139,4 +137,13 @@ export default {
     .content{
         height: calc(100% - 93px);
     }
+    .home-scroll{
+    /* height:300px; */
+    overflow: hidden;
+    position: absolute;
+    top: 44px;
+    bottom: 49px;
+    right: 0;
+    left: 0;
+  }
 </style>
