@@ -2,11 +2,14 @@
     <div id='home'>
         <nav-bar class="home-nav"><div slot="center">首页</div></nav-bar>
         
-        <scroll class="home-scroll" ref="scroll">
+        <scroll class="home-scroll" 
+                ref="scroll" 
+                :pull-up-load="true" 
+                @pullingUp="loadMore">
             <home-swiper :banners='banners'></home-swiper>
             <home-recommend-view :recommends='recommends'></home-recommend-view>
             <feature-view></feature-view>
-            <tab-control class="tab-control" :titles='["流行","新款","精选"]' @tabclick="tabclick"></tab-control>
+            <tab-control :titles='["流行","新款","精选"]' @tabclick="tabclick"></tab-control>
             <goods-list :goods="showGoods"></goods-list>
         </scroll>
         <back-top @click.native="backclick"></back-top>
@@ -25,7 +28,7 @@ import Scroll from 'components/common/scroll/Scroll'
 import BackTop from 'components/content/backtop/BackTop'
 
 import {getHomeMultidata, getHomeGoods} from 'network/home.js'
-
+import {debounce} from 'common/utils.js'
 
 export default {
     name:'home',
@@ -51,12 +54,21 @@ export default {
                 'sell': {page:0, list:[]},
             },
             currentType: 'pop',
+            tabOffsetTop: 0,
+            saveY: 0,
         }
     },
     computed: {
         showGoods(){
             return this.goods[this.currentType].list
         }
+    },
+    activated() {
+        this.$refs.scroll.scrollTo(0, this.saveY, 0)
+        this.$refs.scroll.refresh()
+    },
+    deactivated() {
+        this.saveY = this.$refs.scroll.scroll.y
     },
     created(){
         this.getHomeMultidata()
@@ -67,10 +79,14 @@ export default {
     },
     mounted(){
         //监听图片加载
+        const refresh = debounce(this.$refs.scroll.refresh, 500)
         this.$bus.$on('itemImageLoad', ()=>{
-            this.$refs.scroll.refresh()
+            // this.$refs.scroll.refresh()
+            refresh()
         })
+
     },
+
     methods: {
         //事件监听相关
         tabclick(index){
@@ -92,6 +108,12 @@ export default {
             this.$refs.scroll.scrollTo(0, 0)
         },
 
+        loadMore(){
+            //加载更多
+            this.getHomeGoods(this.currentType)
+        },
+
+
 
 
 
@@ -109,6 +131,9 @@ export default {
             getHomeGoods(type, page).then(res=>{
                 this.goods[type].list.push(...res.data.list)
                 this.goods[type].page += 1
+
+                //上拉加载更多
+                this.$refs.scroll.finishPullUp()
             })
         }
     },
@@ -129,11 +154,7 @@ export default {
         right: 0;
         z-index: 9;
     }
-    .tab-control{
-        position: sticky;
-        top: 44px;
-        background-color: #fff;
-    }
+
     .content{
         height: calc(100% - 93px);
     }

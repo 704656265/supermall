@@ -8,6 +8,7 @@
 import GoodsListItem from './GoodsListItem'
 
 export default {
+    name: 'GoodsList',
     components:{
         GoodsListItem,
     },

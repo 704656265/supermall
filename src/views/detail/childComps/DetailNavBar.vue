@@ -17,6 +17,7 @@
 import NavBar from '@/components/common/navbar/NavBar'
 
 export default {
+    name: 'DetailNavBar',
     components: {
         NavBar
     },
@@ -29,6 +30,7 @@ export default {
     methods:{
         titleclick(index){
             this.currentIndex = index
+            this.$emit('navbarClick', index)
         },
         backclick(){
             this.$router.back()
