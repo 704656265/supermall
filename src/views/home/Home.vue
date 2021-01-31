@@ -159,7 +159,6 @@ export default {
         height: calc(100% - 93px);
     }
     .home-scroll{
-    /* height:300px; */
     overflow: hidden;
     position: absolute;
     top: 44px;
